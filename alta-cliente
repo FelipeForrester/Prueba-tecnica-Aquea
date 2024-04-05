@@ -1,0 +1,17 @@
+ <flow name="post:\alta-cliente:application\json:clientes-api-config">
+		<db:select doc:name="Select" doc:id="c9549c8a-cb4c-4036-9c15-00d3e20e8052" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM bd_clients]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  mensaje: "Alta de cliente exitosa"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}
+
+]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
