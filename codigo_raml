@@ -1,0 +1,145 @@
+#%RAML 1.0
+title: API ABM Clientes
+version: v1
+baseUri: http://localhost:8081/api
+
+
+types:
+  Cliente:
+    properties:
+      dni: number
+      name: string
+      surname: string
+      gender: string
+      city: string
+      date_of_birth: date-only
+      enabled: boolean
+
+/alta-cliente: 
+  post: 
+    description: Funcion para dar de alta un nuevo cliente
+    body:
+      application/json:
+        type: Cliente
+    responses:
+      200:
+        body:
+          application/json:
+            example: | 
+              { "mensaje": "Alta de cliente exitosa" }
+         
+/obtener-cliente/{dni}:
+  get:
+   description: Obtener los datos del cliente mediante su DNI
+   responses:
+     200:
+       body:
+        application/json:
+         example: |
+          {
+            "dni" : 43018022,
+            "name" : "Felipe",
+            "surname": "Forrester",
+            "gender": "Masculino",
+            "city": "Buenos Aires",
+            "date_of_birth": "2000-11-25",
+            "enabled":true
+           }      
+     404:
+        body:
+          application/json:
+            example: |
+              {
+                "mensaje": "El DNI solicitado no existe o está inhabilitado"
+              }
+
+/modificar-cliente/{dni}:
+ put:
+   description: Modificar los datos de un cliente por su DNI
+   body:
+    application/json:
+      example: |
+         {
+          "dni" : 43018022,
+          "name" : "Nuevo Nombre",
+          "surname": "Nuevo Apellido",
+          "gender": "Masculino",
+          "city": "Buenos Aires",
+          "date_of_birth": "2000-11-25",
+          "enabled":true } 
+   responses:
+     200:
+       body:
+        application/json:
+         example: |
+          {"mensaje": "Modifiacion de cliente exitosa"} 
+     404:
+        body:
+          application/json:
+            example: |
+              {
+                "mensaje": "El DNI solicitado no existe o está inhabilitado"
+              }     
+          
+/baja-cliente/{dni}:
+ delete: 
+  description: Dar de baja un cliente por su DNI
+  responses:
+    200:
+      body:
+       application/json:
+        example: | 
+         {"mensaje":"Eliminacion de cliente exitosa"}  
+    404:
+        body:
+          application/json:
+            example: |
+              {
+                "mensaje": "El DNI solicitado no existe o está inhabilitado"
+              }
+                   
+/consulta-clientes:
+ get:
+   description: Consultar clientes con filtros
+   queryParameters:
+     gender?:
+      type: string
+      description: Masculino-Femenino-Otro
+     city?:
+      type: string
+      description: Filtro por ciudad
+     DNIOrder?:
+      type: string
+      enum: ["asc","dec"]
+      default: "asc"
+      description: Ordenar DNI de forma ascendente
+   responses:
+     200:
+       body:
+        application/json:
+         example: | 
+          [
+           { "dni" : 43018022,
+             "name" : "Felipe",
+             "surname": "Forrester",
+             "gender": "Masculino",
+             "city": "Buenos Aires",
+             "date_of_birth": "2000-11-25",
+             "enabled":true
+           },
+           { "dni" : 43123456,
+             "name" : "Juana",
+             "surname": "Garcia",
+             "gender": "Femenino",
+             "city": "Rosario",
+             "date_of_birth": "2002-03-16",
+             "enabled":true
+           }
+          ]
+     404:
+        body:
+          application/json:
+            example: |
+              {
+                "mensaje": "El DNI solicitado no existe o está inhabilitado"
+              }
