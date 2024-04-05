@@ -1,0 +1,29 @@
+    <flow name="put:\modificar-cliente\(dni):application\json:clientes-api-config">
+        <db:select doc:name="Select" doc:id="2d0b2eab-37e4-4053-a634-68427b8dbd65" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM bd_clients WHERE dni = #[attributes.uriParams.dni]]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="dni">attributes.uriParams.'dni'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<db:update doc:name="Update" doc:id="d5d3de70-e680-4ef5-af10-2bc907d6c8d9" config-ref="Database_Config">
+			<db:sql ><![CDATA[UPDATE bd_clients 
+SET name = #[payload.name],
+    surname = #[payload.surname],
+    gender = #[payload.gender],
+    city = #[payload.city],
+    date_of_birth = #[payload.date_of_birth],
+    enabled = #[payload.enabled]]]></db:sql>
+		</db:update>
+		<ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  mensaje: "Modifiacion de cliente exitosa"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
