@@ -1,0 +1,35 @@
+    <flow name="get:\obtener-cliente\(dni):clientes-api-config">
+		<db:select doc:name="Select" doc:id="8aac86c2-5fa2-4bfe-9611-d99f6c6fd554" config-ref="Database_Config">
+			<db:sql><![CDATA[SELECT * FROM bd_clients]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="dni"><![CDATA[attributes.uriParams.'dni']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<choice doc:name="Choice" doc:id="d7c7ddad-3f83-4c6a-bfb0-3153f3f2f399">
+			<when expression="!payload">
+				<ee:transform doc:name="Transform Message" doc:id="c782d90b-34d6-489e-99cd-29e2a5f54e62">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	mensaje: "No se encontró el cliente en el sistema"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<ee:transform doc:name="Transform Message" doc:id="1ba6df0e-28d2-40bf-a480-37353086da10">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+    </flow>
