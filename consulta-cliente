@@ -1,0 +1,32 @@
+    <flow name="get:\consulta-clientes:clientes-api-config">
+        <db:select doc:name="Select" doc:id="9af485a1-dc83-4501-bfce-ca8d432dce0a" >
+			<db:sql ><![CDATA[SELECT * FROM bd_clients]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[
+  {
+    dni: 43018022,
+    name: "Felipe",
+    surname: "Forrester",
+    gender: "Masculino",
+    city: "Buenos Aires",
+    date_of_birth: "2000-11-25",
+    enabled: true
+  }, 
+  {
+    dni: 43123456,
+    name: "Juana",
+    surname: "Garcia",
+    gender: "Femenino",
+    city: "Rosario",
+    date_of_birth: "2002-03-16",
+    enabled: true
+  }
+] as Array {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
